@@ -4,9 +4,16 @@ html, body {
   padding: 0;
 }
 
-.score {
-  color: darkblue;
+/* .score {
   text-align: center;
+} */
+
+.o {
+  color: red;
+}
+
+.x {
+  color: blue;
 }
 
 .hover :hover {
