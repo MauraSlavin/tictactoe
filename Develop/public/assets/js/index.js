@@ -1,4 +1,5 @@
 // html elements that need to be referenced
+var $grid = $(".container .grid");
 var $cell11 = $("#cell11");  
 var $cell12 = $("#cell12");  
 var $cell13 = $("#cell13");  
@@ -7,7 +8,8 @@ var $cell22 = $("#cell22");
 var $cell23 = $("#cell23");  
 var $cell31 = $("#cell31");  
 var $cell32 = $("#cell32");  
-var $cell33 = $("#cell33");  
+var $cell33 = $("#cell33"); 
+var $cellxx = $(".cellxx"); 
 var $cell11img = $("#cell11img");  
 var $cell12img = $("#cell12img");  
 var $cell13img = $("#cell13img");  
@@ -193,6 +195,17 @@ function generate() {
   return str;
 }
 
+// Handle click on a cell
+var handleClick = function(event) {
+  event.stopPropagation();
+  console.log("In handleClick");
+  var cellxx = $(this)
+    .data();
+  console.log(cellxx);
+
+};  // of handleClick function
+
+
 // Get the note data from the inputs, save it to the db file and update the view
 var handleNoteSave = function() {
 
@@ -354,15 +367,8 @@ var tictactoeGrid, oWins, xWins, draws, games, winnerResults;
 // test(grid);  // MMS test
 
 // listen for any click event that needs to be handled.
-// $cell11.on("click",handleClick("11"));
-// $cell12.on("click",handleClick("12"));
-// $cell13.on("click",handleClick("13"));
-// $cell21.on("click",handleClick("21"));
-// $cell22.on("click",handleClick("22"));
-// $cell23.on("click",handleClick("23"));
-// $cell31.on("click",handleClick("31"));
-// $cell32.on("click",handleClick("32"));
-// $cell33.on("click",handleClick("33"));
+$grid.on("click", ".cellxx", handleClick);
+
 winnerResults = checkForWinner(tictactoeGrid);
 // $saveNoteBtn.on("click", handleNoteSave);   // Save a note
 // $noteList.on("click", ".display-note", handleNoteView);  // View a selected note
