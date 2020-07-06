@@ -20,32 +20,106 @@ var $cell33img = $("#cell33img");
 var $xWins = $("#xWins"); 
 var $oWins = $("#oWins"); 
 var $draws = $("#draws");
+var $games = $("#games");
 
 
-$xWins.text("0"); // Initialize score (to be read from JSON in future)
-$oWins.text("0"); // Initialize score (to be read from JSON in future)
-$draws.text("0"); // Initialize score (to be read from JSON in future)
 
-$cell11img.attr('src', 'assets/o.png');
-$cell11.attr('disabled', true);
-$cell11.removeClass( "hover" );
+var initVars = function() {
 
-$cell22img.attr('src', 'assets/x.png');
-$cell22.attr('disabled', true);
-$cell22.removeClass( "hover" );
+  // $cell11img.attr('src', 'assets/o.png');
+  // $cell11.attr('disabled', true);
+  // $cell11.removeClass( "hover" );
 
+  // $cell22img.attr('src', 'assets/x.png');
+  // $cell22.attr('disabled', true);
+  // $cell22.removeClass( "hover" );
 
-// activeNote is used to keep track of the note in the textarea
-var activeNote = {};
+  // possible values for winnerResults: "o", "x", "draw","notDone"
+  var winnerResults = "notDone";
+  var tictactoeGrid = [["","",""],["","",""],["","",""]];
 
+  // to be read from JSON file in the future
+  var oWins = 0;
+  var xWins = 0;
+  var draws = 0;
+  var games = 0;
+
+  // put these on the webpage
+  $oWins.text(oWins.toString());
+  $xWins.text(xWins.toString());
+  $draws.text(draws.toString());
+  $games.text(games.toString());
+
+  return [tictactoeGrid, oWins, xWins, draws, games, winnerResults];
+
+};  // of initVars
+
+// Returns "o" if o won, "x" if x won, "draw" if it's a draw, or "notDone" to continue the game
+var checkForWinner = function(grid) {
+
+  // check for blank cells; if at least one found, assume game not done, unless winner found
+  // if all blanks, return notDone
+  var allBlanks = true;
+  var winner = "draw";  // assume until found otherwise
+
+  for (var row = 0; row < 3; row++) {
+    for (var col = 0; col < 3; col++) {
+      if (grid[row][col] == "") {
+        winner = "notDone"
+      } else {
+        allBlanks = false;
+      };   
+      if (!allBlanks && winner=="notDone") break;  // no need to continue checking
+    };
+    if (!allBlanks && winner=="notDone") break;  // no need to continue checking
+  };
+
+  if (allBlanks) return "notDone"; // don't check for a winner if there are all blanks
+
+  // check for row winner
+  for (var row = 0; row < 3; row++) {
+    if (grid[row][0] == grid[row][1] &&
+        grid[row][1] == grid[row][2] &&
+        grid[row][0] != "") {
+          return grid[row][0];
+        };
+  };
+
+  // check for column winner
+  for (var col = 0; col < 3; col++) {
+    if (grid[0][col] == grid[1][col] &&
+        grid[1][col] == grid[2][col] &&
+        grid[0][col] != "") {
+          return grid[0][col];
+        };
+  };
+
+  // check for diagonal winner
+  if (((grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]) ||
+      (grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])) &&
+      grid[1][1] != "") {
+        return grid[1][1];
+      };
+
+  return winner;
+  
+};  // checkForWinner
+
+// for testing MMS
+var test = function(grid) {
+  var winner = checkForWinner(grid);
+  console.log("Grid: " + grid + ";  Winner: " + winner);
+};
+
+// deleted initializing activeNote
 // used to keep track of whether you are editting an existing note,
 // or creating a new note.  
 // true means an existing note is being editted; 
 // false means a new note is being created
-var editMode = false; 
+// var editMode = false; 
 
 // A function for getting all notes from the db file
-var getNotes = function() {
+var getScore = function() {
   return $.ajax({
     url: "/api/notes",  // url and method must match path & function in notetaker.js
     method: "GET"
@@ -258,20 +332,46 @@ var renderNoteList = function(notes) {
 
 // Gets notes from the db file and renders them to the sidebar
 var getAndRenderNotes = function() {
-  return getNotes().then(function(data) {
+  return getScores().then(function(data) {
     renderNoteList(data);
   });
 };
 
-// listen for any click event that needs to be handled.
-$saveNoteBtn.on("click", handleNoteSave);   // Save a note
-$noteList.on("click", ".display-note", handleNoteView);  // View a selected note
-$newNoteBtn.on("click", handleNewNoteView);           // Start a new note
-$noteList.on("click", ".delete-note", handleNoteDelete);  // delete a note
-$noteList.on("click", ".edit-note", handleNoteEdit);  // edit a note
-$noteTitle.on("keyup", handleRenderSaveBtn);   // display save button
-$noteText.on("keyup", handleRenderSaveBtn);    // display save button
+// Initialize global variables
+var tictactoeGrid, oWins, xWins, draws, games, winnerResults;
+[tictactoeGrid, oWins, xWins, draws, games, winnerResults] = initVars();
 
-// Gets and renders the initial list of notes
-getAndRenderNotes();
-handleRenderSaveBtn();
+// for testing
+// var grid = [["x","x","x"],["","",""],["","",""]]; // MMS test; x wins
+// test(grid);  // MMS test
+// var grid = [["o","o","o"],["","",""],["","",""]]; // MMS test; o wins
+// test(grid);  // MMS test
+// var grid = [["o","","o"],["","",""],["","",""]]; // MMS test; incomplete
+// test(grid);  // MMS test
+// var grid = [["o","","x"],["","o",""],["","","o"]]; // MMS test; diagonol
+// test(grid);  // MMS test
+// var grid = [["o","o","x"],["x","x","o"],["o","x","x"]]; // MMS test; draw
+// test(grid);  // MMS test
+
+// listen for any click event that needs to be handled.
+// $cell11.on("click",handleClick("11"));
+// $cell12.on("click",handleClick("12"));
+// $cell13.on("click",handleClick("13"));
+// $cell21.on("click",handleClick("21"));
+// $cell22.on("click",handleClick("22"));
+// $cell23.on("click",handleClick("23"));
+// $cell31.on("click",handleClick("31"));
+// $cell32.on("click",handleClick("32"));
+// $cell33.on("click",handleClick("33"));
+winnerResults = checkForWinner(tictactoeGrid);
+// $saveNoteBtn.on("click", handleNoteSave);   // Save a note
+// $noteList.on("click", ".display-note", handleNoteView);  // View a selected note
+// $newNoteBtn.on("click", handleNewNoteView);           // Start a new note
+// $noteList.on("click", ".delete-note", handleNoteDelete);  // delete a note
+// $noteList.on("click", ".edit-note", handleNoteEdit);  // edit a note
+// $noteTitle.on("keyup", handleRenderSaveBtn);   // display save button
+// $noteText.on("keyup", handleRenderSaveBtn);    // display save button
+
+// // Gets and renders the initial list of notes
+// getAndRenderNotes();
+// handleRenderSaveBtn();
