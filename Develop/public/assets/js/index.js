@@ -1,15 +1,17 @@
 // html elements that need to be referenced
 var $grid = $(".container .grid");
-var $cell11 = $("#cell11");  
-var $cell12 = $("#cell12");  
-var $cell13 = $("#cell13");  
-var $cell21 = $("#cell21");  
-var $cell22 = $("#cell22");  
-var $cell23 = $("#cell23");  
-var $cell31 = $("#cell31");  
-var $cell32 = $("#cell32");  
-var $cell33 = $("#cell33"); 
-var $cellxx = $(".cellxx"); 
+var $turn = $(".turn");
+var $whosturn = $(".whosturn");
+// var $cell11 = $("#cell11");  
+// var $cell12 = $("#cell12");  
+// var $cell13 = $("#cell13");  
+// var $cell21 = $("#cell21");  
+// var $cell22 = $("#cell22");  
+// var $cell23 = $("#cell23");  
+// var $cell31 = $("#cell31");  
+// var $cell32 = $("#cell32");  
+// var $cell33 = $("#cell33"); 
+// var $cellxx = $(".cellxx"); 
 var $cell11img = $("#cell11img");  
 var $cell12img = $("#cell12img");  
 var $cell13img = $("#cell13img");  
@@ -36,6 +38,9 @@ var initVars = function() {
   // $cell22.attr('disabled', true);
   // $cell22.removeClass( "hover" );
 
+  // $turn.removeClass("x").addClass("o");
+  // $whosturn.text("o");
+
   // possible values for winnerResults: "o", "x", "draw","notDone"
   var winnerResults = "notDone";
   var tictactoeGrid = [["","",""],["","",""],["","",""]];
@@ -46,13 +51,16 @@ var initVars = function() {
   var draws = 0;
   var games = 0;
 
+  // x goes first
+  var whosTurn = 'x';
+
   // put these on the webpage
   $oWins.text(oWins.toString());
   $xWins.text(xWins.toString());
   $draws.text(draws.toString());
   $games.text(games.toString());
 
-  return [tictactoeGrid, oWins, xWins, draws, games, winnerResults];
+  return [tictactoeGrid, oWins, xWins, draws, games, winnerResults, whosTurn];
 
 };  // of initVars
 
@@ -198,10 +206,49 @@ function generate() {
 // Handle click on a cell
 var handleClick = function(event) {
   event.stopPropagation();
-  console.log("In handleClick");
-  var cellxx = $(this)
-    .data();
-  console.log(cellxx);
+
+  // get which cell was clicked
+  var cellxx = $(this).data();
+  
+  // to separate row and column
+  var cellxxChar=cellxx.id.toString();
+
+  // build id's for jQuery
+  var sourceId = `cell${cellxxChar}img`;
+  var buttonId = `cell${cellxxChar}`;
+  var imageFilePath = `assets/${whosTurn}.png`;
+
+  // put x or o in cell
+  $('#'+sourceId).attr('src', imageFilePath);
+  // disable cell
+  $('#'+buttonId).attr('disabled', true);
+  $('#'+buttonId).removeClass("hover");
+  // update the grid
+  tictactoeGrid[cellxxChar[0]-1][cellxxChar[1]-1] = whosTurn;
+
+  winnerResults = checkForWinner(tictactoeGrid);
+
+  switch(winnerResults) {
+    case "notDone":
+      // change the player
+      $turn.removeClass(whosTurn); // remove color of old player from message on webpage
+      // change turn
+      whosTurn = (whosTurn == "x") ? "o" : "x";
+      // Update message on webpage and update color
+      $whosturn.text(whosTurn);
+      $turn.addClass(whosTurn);
+      break;
+    case "o":
+      // need code here
+      break;
+    case "x":
+      // need code here
+      break;
+    case "draw":
+      // need code here
+      break;
+};
+
 
 };  // of handleClick function
 
@@ -351,8 +398,8 @@ var getAndRenderNotes = function() {
 };
 
 // Initialize global variables
-var tictactoeGrid, oWins, xWins, draws, games, winnerResults;
-[tictactoeGrid, oWins, xWins, draws, games, winnerResults] = initVars();
+var tictactoeGrid, oWins, xWins, draws, games, winnerResults, whosTurn;
+[tictactoeGrid, oWins, xWins, draws, games, winnerResults, whosTurn] = initVars();
 
 // for testing
 // var grid = [["x","x","x"],["","",""],["","",""]]; // MMS test; x wins
@@ -369,7 +416,7 @@ var tictactoeGrid, oWins, xWins, draws, games, winnerResults;
 // listen for any click event that needs to be handled.
 $grid.on("click", ".cellxx", handleClick);
 
-winnerResults = checkForWinner(tictactoeGrid);
+
 // $saveNoteBtn.on("click", handleNoteSave);   // Save a note
 // $noteList.on("click", ".display-note", handleNoteView);  // View a selected note
 // $newNoteBtn.on("click", handleNewNoteView);           // Start a new note
