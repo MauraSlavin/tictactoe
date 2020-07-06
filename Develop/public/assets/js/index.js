@@ -1,9 +1,39 @@
 // html elements that need to be referenced
-var $noteTitle = $(".note-title");   // title of note
-var $noteText = $(".note-textarea");  // text of note
-var $saveNoteBtn = $(".save-note");  // save note button
-var $newNoteBtn = $(".new-note");  // start new note button
-var $noteList = $(".list-container .list-group");
+var $cell11 = $("#cell11");  
+var $cell12 = $("#cell12");  
+var $cell13 = $("#cell13");  
+var $cell21 = $("#cell21");  
+var $cell22 = $("#cell22");  
+var $cell23 = $("#cell23");  
+var $cell31 = $("#cell31");  
+var $cell32 = $("#cell32");  
+var $cell33 = $("#cell33");  
+var $cell11img = $("#cell11img");  
+var $cell12img = $("#cell12img");  
+var $cell13img = $("#cell13img");  
+var $cell21img = $("#cell21img");  
+var $cell22img = $("#cell22img");  
+var $cell23img = $("#cell23img");  
+var $cell31img = $("#cell31img");  
+var $cell32img = $("#cell32img");  
+var $cell33img = $("#cell33img");  
+var $xWins = $("#xWins"); 
+var $oWins = $("#oWins"); 
+var $draws = $("#draws");
+
+
+$xWins.text("0"); // Initialize score (to be read from JSON in future)
+$oWins.text("0"); // Initialize score (to be read from JSON in future)
+$draws.text("0"); // Initialize score (to be read from JSON in future)
+
+$cell11img.attr('src', 'assets/o.png');
+$cell11.attr('disabled', true);
+$cell11.removeClass( "hover" );
+
+$cell22img.attr('src', 'assets/x.png');
+$cell22.attr('disabled', true);
+$cell22.removeClass( "hover" );
+
 
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};

@@ -8,3 +8,9 @@ html, body {
   color: darkblue;
   text-align: center;
 }
+
+.hover :hover {
+  transform: scale(1.05);
+  position: relative;
+  z-index: 5;
+}

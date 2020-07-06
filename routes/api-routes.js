@@ -10,7 +10,7 @@ const fs = require("fs");
 router.get("/notes", function(err, res) {
   try {
     // reads the notes from the json file.
-    notesData = fs.readFileSync("Develop/db/db.json", "utf8");
+    notesData = fs.readFileSync("Develop/db/score.json", "utf8");
     // parses it so notesData is an array of objects
     notesData = JSON.parse(notesData);
 
@@ -29,7 +29,7 @@ router.get("/notes", function(err, res) {
 router.post("/notes", function(req, res) {
   try {
     // reads the json file
-    notesData = fs.readFileSync("./Develop/db/db.json", "utf8");
+    notesData = fs.readFileSync("./Develop/db/score.json", "utf8");
     // parses the data to get an array of objects
     notesData = JSON.parse(notesData);
     // add the new note to the array of note objects
@@ -37,7 +37,7 @@ router.post("/notes", function(req, res) {
     // make it a string (stringify) so you can write it to the file
     notesData = JSON.stringify(notesData);
     // write the new notes to the file
-    fs.writeFile("./Develop/db/db.json", notesData, "utf8", function(err) {
+    fs.writeFile("./Develop/db/score.json", notesData, "utf8", function(err) {
       // error handling
       if (err) throw err;
     });
@@ -56,7 +56,7 @@ router.post("/notes", function(req, res) {
 router.delete("/notes/:id", function(req, res) {
   try {
     // reads the json file
-    notesData = fs.readFileSync("./Develop/db/db.json", "utf8");
+    notesData = fs.readFileSync("./Develop/db/score.json", "utf8");
     // parses the data to get an array of objects
     notesData = JSON.parse(notesData);
     // delete the old note from the array of note objects
@@ -70,7 +70,7 @@ router.delete("/notes/:id", function(req, res) {
     // make it a string (stringify) so you can write it to the file
     notesData = JSON.stringify(notesData);
     // write the new notes to the file
-    fs.writeFile("./Develop/db/db.json", notesData, "utf8", function(err) {
+    fs.writeFile("./Develop/db/score.json", notesData, "utf8", function(err) {
       // error handling
       if (err) throw err;
     });
