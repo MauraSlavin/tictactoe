@@ -4,9 +4,9 @@ html, body {
   padding: 0;
 }
 
-/* .score {
-  text-align: center;
-} */
+body {
+  background: rgb(214, 224, 168);
+}
 
 .o {
   color: red;

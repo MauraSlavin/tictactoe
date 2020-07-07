@@ -1,7 +1,7 @@
 // html elements that need to be referenced
 var $grid = $(".container .grid");
 var $turn = $(".turn");
-var $whosturn = $(".whosturn");
+// var $whosturn = $(".whosturn");
 // var $cell11 = $("#cell11");  
 // var $cell12 = $("#cell12");  
 // var $cell13 = $("#cell13");  
@@ -12,29 +12,31 @@ var $whosturn = $(".whosturn");
 // var $cell32 = $("#cell32");  
 // var $cell33 = $("#cell33"); 
 // var $cellxx = $(".cellxx"); 
-var $cell11img = $("#cell11img");  
-var $cell12img = $("#cell12img");  
-var $cell13img = $("#cell13img");  
-var $cell21img = $("#cell21img");  
-var $cell22img = $("#cell22img");  
-var $cell23img = $("#cell23img");  
-var $cell31img = $("#cell31img");  
-var $cell32img = $("#cell32img");  
-var $cell33img = $("#cell33img");  
+// var $cell11img = $("#cell11img");  
+// var $cell12img = $("#cell12img");  
+// var $cell13img = $("#cell13img");  
+// var $cell21img = $("#cell21img");  
+// var $cell22img = $("#cell22img");  
+// var $cell23img = $("#cell23img");  
+// var $cell31img = $("#cell31img");  
+// var $cell32img = $("#cell32img");  
+// var $cell33img = $("#cell33img");  
 var $xWins = $("#xWins"); 
 var $oWins = $("#oWins"); 
 var $draws = $("#draws");
 var $games = $("#games");
+var $turn = $(".turn");
+var $newGameBtn = $(".newGameBtn");
 
 
 
 var initVars = function() {
 
-  // $cell11img.attr('src', 'assets/o.png');
+  // $cell11img.attr('src', 'assets/images/o.png');
   // $cell11.attr('disabled', true);
   // $cell11.removeClass( "hover" );
 
-  // $cell22img.attr('src', 'assets/x.png');
+  // $cell22img.attr('src', 'assets/images/x.png');
   // $cell22.attr('disabled', true);
   // $cell22.removeClass( "hover" );
 
@@ -120,6 +122,33 @@ var test = function(grid) {
   var winner = checkForWinner(grid);
   console.log("Grid: " + grid + ";  Winner: " + winner);
 };
+
+var handleNewGame = function() {
+  // clear grid (on page and in variable)
+  tictactoeGrid = [["","",""],["","",""],["","",""]];
+
+  var sourceId, buttonId;
+
+  for (var row = 1; row <= 3; row++) {
+    for (var col = 1; col <= 3; col++) {
+      var sourceId = `cell${row}${col}img`;
+      var buttonId = `cell${row}${col}`;
+
+      // clear x & o's from all cells
+      $('#'+sourceId).attr('src', 'assets/images/unchosen.png');
+      // enable hover and make clickable
+      $('#'+buttonId).attr('disabled', false);
+      $('#'+buttonId).addClass("hover");
+    }
+  };
+  
+  // make it x's turn
+  whosTurn = "x";
+
+  // change messages on screen
+  $turn.text("").append(`It's <span class="whosturn">x</span>'s turn.`).addClass(whosTurn);
+
+};  // of handleNewGame
 
 // deleted initializing activeNote
 // used to keep track of whether you are editting an existing note,
@@ -216,7 +245,7 @@ var handleClick = function(event) {
   // build id's for jQuery
   var sourceId = `cell${cellxxChar}img`;
   var buttonId = `cell${cellxxChar}`;
-  var imageFilePath = `assets/${whosTurn}.png`;
+  var imageFilePath = `assets/images/${whosTurn}.png`;
 
   // put x or o in cell
   $('#'+sourceId).attr('src', imageFilePath);
@@ -235,19 +264,39 @@ var handleClick = function(event) {
       // change turn
       whosTurn = (whosTurn == "x") ? "o" : "x";
       // Update message on webpage and update color
-      $whosturn.text(whosTurn);
+      $(".whosturn").text(whosTurn);
       $turn.addClass(whosTurn);
       break;
     case "o":
       // need code here
+      oWins++;
+      $($oWins).text(oWins);
       break;
     case "x":
       // need code here
+      xWins++;
+      $($xWins).text(xWins);
       break;
     case "draw":
       // need code here
+      draws++;
+      $($draws).text(draws);
       break;
-};
+  };
+
+  if (winnerResults != "notDone") {
+      games++;
+      $($games).text(games);
+      // $($msg).addClass(winnerResults).text(`The winner is: ${winnerResults}!!`);
+      $('.cellxx').attr('disabled', true).removeClass('hover');
+      $turn.addClass(winnerResults).text(`The winner is: ${winnerResults}!!`);;
+      $newGameBtn.removeClass('invisible');
+
+      // var tictactoeGrid = [["","",""],["","",""],["","",""]];
+      // whosTurn = 'x';
+
+      
+  }
 
 
 };  // of handleClick function
@@ -415,6 +464,7 @@ var tictactoeGrid, oWins, xWins, draws, games, winnerResults, whosTurn;
 
 // listen for any click event that needs to be handled.
 $grid.on("click", ".cellxx", handleClick);
+$newGameBtn.on("click", handleNewGame);
 
 
 // $saveNoteBtn.on("click", handleNoteSave);   // Save a note
